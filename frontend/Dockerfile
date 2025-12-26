@@ -1,9 +1,12 @@
-FROM nginx
-
-RUN rm -rf /usr/share/nginx/html/*
-
+FROM node:22 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
 RUN npm run build
 
-COPY build/ /usr/share/nginx/html
 
+FROM nginx:latest
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
+
