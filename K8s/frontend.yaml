@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fr-app
+  template:
+    metadata:
+      labels:
+        app: fr-app
+    spec:
+      containers:
+      - name: frontend-container
+        image: omarsa999/node-frontendimage:latest
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fr-service
+  namespace: default
+  labels:
+    app: fr-app
+spec:
+  selector:
+    app: fr-app
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30400
